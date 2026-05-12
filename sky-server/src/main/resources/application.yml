@@ -1,6 +1,7 @@
 server:
   port: 8080
 
+#可以让另外一个配置项也生效
 spring:
   profiles:
     active: dev

@@ -9,6 +9,12 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
+
+/**
+ * 也是一个实体，为前端展示数据提供的对象
+ */
+
+
 @Data
 @Builder
 @NoArgsConstructor

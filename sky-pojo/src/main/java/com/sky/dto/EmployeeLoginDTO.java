@@ -6,6 +6,12 @@ import lombok.Data;
 
 import java.io.Serializable;
 
+
+/**
+ *
+ * 专注做数据传输的实体类型
+ */
+
 @Data
 @ApiModel(description = "员工登录时传递的数据模型")
 public class EmployeeLoginDTO implements Serializable {
