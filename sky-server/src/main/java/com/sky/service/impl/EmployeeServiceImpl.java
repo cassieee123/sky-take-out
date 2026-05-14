@@ -82,8 +82,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         //下面设置其他的对象属性
         employee.setStatus(StatusConstant.ENABLE);//设置该对象是否是可用的
         employee.setPassword(DigestUtils.md5DigestAsHex(PasswordConstant.DEFAULT_PASSWORD.getBytes()));//将字符串转换成字节数组
-        employee.setCreateTime(LocalDateTime.now());
-        employee.setUpdateTime(LocalDateTime.now());
+//        employee.setCreateTime(LocalDateTime.now());
+//        employee.setUpdateTime(LocalDateTime.now());
         employee.setCreateUser(BaseContext.getCurrentId());//TODO后续需要修改为当前登录用户的id
         //在登录的时候jwt令牌中会携带当前登录用户的id，所以可以解析出来id
         //jwt解析出来员工id之后  如何传给Service的save方法？
@@ -104,5 +104,37 @@ public class EmployeeServiceImpl implements EmployeeService {
         //PageHelper的startPage方法可以通过传入的参数自动设置Limit，传入的是页码和记录数，好处是：字符串的拼接不用自己做
         //底层实现：
         //Page是PageHelper插件定义的一个泛型类，是一个固定的返回类型
+    }
+
+
+    //取的是路径参数，加注解  如果和路径参数不同名，就要加括号
+    @Override
+    public void startOrStop(Integer status, Long id) {
+        //第一种写法-》传统模式
+//        Employee employee = new Employee();
+//        employee.setStatus(status);
+//        employee.setId(id);
+        //这种方式叫做链式建造者模式，更简洁
+        Employee employee = Employee.builder().status(status).id(id).build();//
+        //builder()是建造者模式；.status().id()是链式赋值；.builer()是生成对象
+        // 生成对象
+        employeeMapper.update(employee);
+    }
+
+    @Override
+    public Employee getById(Long id) {
+         Employee employee = employeeMapper.getById(id);
+         employee.setPassword("****");
+         //这个地方是从数据库中查到数据以后，返回给前端之前，需要将密码手动覆盖成****这样前端就看不见了，而且也不会更改数据库中的元素
+         return employee;
+    }
+
+    @Override
+    public void update(EmployeeDTO employeeDTO) {
+        Employee employee = new Employee();
+        BeanUtils.copyProperties(employeeDTO, employee);//属性拷贝
+//        employee.setUpdateTime(LocalDateTime.now());
+//        employee.setUpdateUser(BaseContext.getCurrentId());
+        employeeMapper.update(employee);//需要传入Employee参数
     }
 }

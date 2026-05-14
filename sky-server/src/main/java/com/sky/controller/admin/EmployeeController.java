@@ -112,7 +112,37 @@ public class EmployeeController {
         return Result.success(pageResult);
     }
 
+    /**
+     * 下面是启禁员工账号，传入status和id
+     */
+    @PostMapping("status/{status}")
+    @ApiOperation("启用禁用员工账号")
+    public Result<Employee> startOrStop(@PathVariable Integer status, Long id){
+        log.info("启用禁用员工账号：{},{}", status, id);
+        employeeService.startOrStop(status, id);
+        return Result.success();
+    }
 
+    /**
+     * 编辑员工  可以修改员工的姓名、手机号和身份证号等
+     * 这里是先查到，先根据id用查询语句把这个Employee对象查询出来，然后进行显示
+     */
+    @GetMapping("/{id}")
+    @ApiOperation("根据id查询员工信息")
+    public Result<Employee> getById(@PathVariable Long id){
+       Employee employee = employeeService.getById(id);
+       return Result.success(employee);
+    }
 
+    /**
+     * 编辑员工信息 现在是真的编辑了
+     */
+    @PutMapping
+    @ApiOperation("编辑员工信息")
+    public Result<Employee> update(@RequestBody EmployeeDTO employeeDTO){
+        log.info("编辑员工信息：{}", employeeDTO);
+        employeeService.update(employeeDTO);
+        return Result.success();
+    }
 
 }
