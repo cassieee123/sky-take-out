@@ -6,3 +6,9 @@ sky:
     database: sky_take_out
     username: root
     password: 123456
+
+  qiniu:
+    accessKey: 0cGoFjREJRCTVDjZZMO-tTCmwnLN-aik33hNPosr
+    secretKey: 094elNxD1A5u37ORTS2_wXBs3Opz5IGvXnIx58Fp
+    bucket: itheimacangqiong
+    hostName: http://tf228sotp.hd-bkt.clouddn.com
