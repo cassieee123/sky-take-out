@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.sky.mapper.SetmealDishMapper">
+<!--    根据菜品ids查询关联的套餐名ids-->
+    <select id="getSetmealIdsByDishIds"  parameterType="java.util.List"  resultType="java.lang.Long">
+        select distinct setmeal_id
+        from  setmeal_dish
+        where dish_id in
+        <foreach collection="ids" item="dishId" open="(" separator="," close=")">
+            #{dishId}
+        </foreach>
+#         这里Collection是要循环的列表  item是循环里的每一个元素
+    </select>
+
+</mapper>
