@@ -12,3 +12,8 @@ sky:
     secretKey: 094elNxD1A5u37ORTS2_wXBs3Opz5IGvXnIx58Fp
     bucket: itheimacangqiong
     hostName: http://tf228sotp.hd-bkt.clouddn.com
+  redis:
+    host: localhost
+    port: 6379
+    password: 123456
+    database: 10

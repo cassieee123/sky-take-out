@@ -1,7 +1,13 @@
 package com.sky.mapper;
 
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
+import com.github.pagehelper.Page;
+import com.sky.annotation.AutoFill;
+import com.sky.dto.SetmealDTO;
+import com.sky.dto.SetmealPageQueryDTO;
+import com.sky.entity.Setmeal;
+import com.sky.enumeration.OperationType;
+import com.sky.vo.SetmealVO;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -17,5 +23,28 @@ public interface SetmealMapper {
     Integer countByCategoryId(Long id);
 
 
+    //新增套餐
+    @AutoFill(OperationType.INSERT)
+    void insert(Setmeal setmeal);
 
+    //分页查询
+    Page<SetmealVO> pageQuery(SetmealPageQueryDTO setmealPageQueryDTO);
+
+    //根据ID查询到当前套餐  但是这个地方要注意因为categroyName没有被拿到  所以写到xml文件中，
+    SetmealVO getById(Long id);
+
+    //批量删除套餐信息
+    void deleteBatch(List<Long> ids);
+
+    //删除套餐信息
+    @Delete("delete from setmeal where id = #{id}")
+    void delete(Long id);
+
+    //对套餐进行起售或停售  合并到更新操作上
+//    @AutoFill(OperationType.UPDATE)
+//    void setStatus(Integer status, Long id);
+
+    //更新套餐
+    @AutoFill(OperationType.UPDATE)
+    void update(Setmeal setmeal);
 }

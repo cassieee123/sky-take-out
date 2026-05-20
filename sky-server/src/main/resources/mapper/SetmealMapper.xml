@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.sky.mapper.SetmealMapper">
+<!--    新增菜品-->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        insert into setmeal(category_id, name, price, status, description, image, create_time, update_time, create_user, update_user) VALUES
+        (#{categoryId}, #{name}, #{price}, #{status},#{description},#{image}, #{createTime}, #{updateTime}, #{createUser}, #{updateUser} )
+    </insert>
+
+<!--    分页查询，虽然没有体现DTO 但确实是从DTO中取的数据    -->
+<!--    只要把一个对象传给Mapper，XML中就可以直接用它的属性名-->
+    <select id="pageQuery" resultType="com.sky.vo.SetmealVO">
+        select s.*, c.name categoryName from setmeal s left join category c on s.category_id = c.id
+        <where>
+            <if test="name !=null">
+                and s.name like concat('%', #{name}, '%')
+            </if>
+            <if test="status != null">
+                and s.status = #{status}
+            </if>
+            <if test="categoryId != null">
+                and s.category_id = #{categoryId}
+            </if>
+        </where>
+        order by s.create_time desc
+    </select>
+
+<!--    根据ID进行查询，需要注意需要包含categoryName-->
+    <select id="getById" parameterType="java.lang.Long" resultType="com.sky.vo.SetmealVO" >
+        select s.*, c.name categoryName
+        from setmeal s
+        left join category c on s.category_id = c.id
+        where s.id = #{id}
+    </select>
+    
+
+<!--    根据ids批量删除套餐信息-->
+    <delete id="deleteBatch" >
+        delete from setmeal where id in
+        <foreach collection="ids" item ="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+<!--    对套餐起售或停售  合并到更新操作上-->
+<!--    <update id="setStatus">-->
+<!--        UPDATE setmeal-->
+<!--            <set>-->
+<!--                <if test="status !=null">-->
+<!--                    status = #{status}-->
+<!--                </if>-->
+<!--            </set>-->
+<!--        where id = #{id}-->
+<!--    </update>-->
+<!--    -->
+<!--    更新套餐信息-->
+    <update id="update">
+        UPDATE setmeal
+            <set>
+                <if test="name != null and name !=''">name = #{name},</if>
+                <if test="categoryId != null">category_id = #{categoryId},</if>
+                <if test="price != null">price = #{price},</if>
+                <if test="image != null">image = #{image},</if>
+                <if test="description != null and description !=''">description = #{description},</if>
+                <if test="status != null">status = #{status},</if>
+                <if test="updateUser!= null">update_user = #{updateUser},</if>
+                <if test="updateTime!= null">update_time = #{updateTime}</if>
+            </set>
+                where id = #{id}
+    </update>
+
+</mapper>

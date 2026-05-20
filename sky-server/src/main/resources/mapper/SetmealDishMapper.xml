@@ -14,4 +14,33 @@
 #         这里Collection是要循环的列表  item是循环里的每一个元素
     </select>
 
+<!--    新增套餐和菜品的关系-->
+    <insert id="insertBatch" useGeneratedKeys="true" keyProperty="id">
+        insert into setmeal_dish(setmeal_id, dish_id, name, price, copies) VALUES
+        <foreach collection="setmealDishes" item="sd" separator=",">
+            (#{sd.setmealId}, #{sd.dishId}, #{sd.name}, #{sd.price}, #{sd.copies})
+        </foreach>
+    </insert>
+
+<!--    删除套餐和菜品之间的关系-->
+    <delete id="delete">
+        delete from setmeal_dish where setmeal_id = #{setmealId}
+    </delete>
+
+<!--    批量删除套餐和菜品之间的关系-->
+    <delete id="deleteBatch">
+        delete from setmeal_dish where setmeal_id in
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+
+    </delete>
+
+<!--    根据套餐id查询当前套餐和菜品关联-->
+    <select id="getBySetmealId" parameterType="java.lang.Long" resultType="com.sky.entity.SetmealDish">
+        select * from setmeal_dish
+        where setmeal_id = #{id}
+    </select>
+
 </mapper>
+

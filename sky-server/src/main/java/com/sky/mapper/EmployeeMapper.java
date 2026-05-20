@@ -47,7 +47,7 @@ public interface EmployeeMapper {
     Employee getById(Long id);
 
     /**
-     * 根据
+     * 更新员工信息
      * @param employee
      */
     @AutoFill(value = OperationType.UPDATE)

@@ -11,6 +11,8 @@ import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
+import java.util.List;
+
 
 @Mapper
 public interface DishMapper {
@@ -43,9 +45,33 @@ public interface DishMapper {
     Dish getById(Long id);
 
     /**
-     * 根据ID删除菜品
+     * 根据主键ID删除菜品
      * @param id
      */
     @Delete("delete from dish where id = #{id}")
     void deleteById(Long id);
+
+    /**
+     * 根据菜品id 集合批量删除菜品
+     */
+    void deleteByIds(List<Long> ids);
+
+    /**
+     * 根据id动态修改菜品
+     * @param dish
+     */
+    @AutoFill(value = OperationType.UPDATE)
+    void update(Dish dish);
+
+
+    /**
+     * 根据分类id查询菜品
+     * @param
+     * @return
+     */
+    List<Dish> list(Dish dish);
+
+    //根据套餐id查询菜品
+    @Select("select d.* from dish d left join setmeal_dish s on s.dish_id = d.id where s.setmeal_id = #{id}")
+    List<Dish> getBySetmealId(Long id);
 }

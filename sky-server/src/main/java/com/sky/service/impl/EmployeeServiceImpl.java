@@ -9,6 +9,7 @@ import com.sky.context.BaseContext;
 import com.sky.dto.EmployeeDTO;
 import com.sky.dto.EmployeeLoginDTO;
 import com.sky.dto.EmployeePageQueryDTO;
+import com.sky.dto.PasswordEditDTO;
 import com.sky.entity.Employee;
 import com.sky.exception.AccountLockedException;
 import com.sky.exception.AccountNotFoundException;
@@ -96,7 +97,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         //
         PageHelper.startPage(employeePageQueryDTO.getPage(), employeePageQueryDTO.getPageSize());//将页码和每页记录数传入
         //page是固定的，Employee是每个用户的信息
-        Page<Employee> page = employeeMapper.pageQuery(employeePageQueryDTO);
+        Page<Employee> page = employeeMapper.pageQuery(employeePageQueryDTO);//这里反正返回的事全部符合条件的Employee数据，PageHelper会自动帮我们进行分页处理，返回的page对象中就包含了分页后的数据和总记录数
         //要将page对象处理为PageResult对象
         long total = page.getTotal();
         List<Employee> result = page.getResult();
@@ -136,5 +137,22 @@ public class EmployeeServiceImpl implements EmployeeService {
 //        employee.setUpdateTime(LocalDateTime.now());
 //        employee.setUpdateUser(BaseContext.getCurrentId());
         employeeMapper.update(employee);//需要传入Employee参数
+    }
+
+    //修改员工密码
+    @Override
+    public void editPassword(PasswordEditDTO passwordEditDTO) {
+        //1、首先先取出数据库中的旧密码
+        Employee employee = employeeMapper.getById(passwordEditDTO.getEmpId());
+        String oldPasswordInDB = employee.getPassword();//获取到这是数据库中的旧密码
+        //2、将输入的旧密码进行md5加密，然后进行判断验证
+        String oldPassword = DigestUtils.md5DigestAsHex(passwordEditDTO.getOldPassword().getBytes());//输入的旧密码进行加密
+        if(!oldPassword.equals(oldPasswordInDB)) {
+            throw new PasswordErrorException(MessageConstant.PASSWORD_ERROR);//抛出异常  旧密码错误
+        }
+        //3、将新密码md5加密，然后更新到数据库
+        String newPassword =  DigestUtils.md5DigestAsHex(passwordEditDTO.getNewPassword().getBytes());//在进行密码加密的时候  得转换成byte才行
+        employee.setPassword(newPassword);
+        employeeMapper.update(employee);//必须要用从数据库中查出来的employee  因为他有id
     }
 }
