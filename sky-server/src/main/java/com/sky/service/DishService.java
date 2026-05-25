@@ -25,5 +25,8 @@ public interface DishService {
     void startOrStop(Integer status, Long id);
 
     List<Dish> listByCategoryId(Long categoryId);
+
+    //条件查询菜品和口味
+    List<DishVO> listWithFlavor(Dish dish);
 }
 

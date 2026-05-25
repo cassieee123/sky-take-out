@@ -53,5 +53,8 @@
             <groupId>com.qiniu</groupId>
             <artifactId>qiniu-java-sdk</artifactId>
         </dependency>
+
+
+
     </dependencies>
 </project>
