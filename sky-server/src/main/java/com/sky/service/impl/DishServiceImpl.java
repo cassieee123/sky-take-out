@@ -140,7 +140,10 @@ public class DishServiceImpl implements DishService {
                 dishFlavor.setDishId(dishDTO.getId());
             });
         }
-        dishFlavorMapper.insertBatch(flavors);
+        // 先判断：不为空且有元素，才调用批量插入
+        if (flavors != null && !flavors.isEmpty()) {
+            dishFlavorMapper.insertBatch(flavors);
+        }
     }
 
     //起售  停售商品
