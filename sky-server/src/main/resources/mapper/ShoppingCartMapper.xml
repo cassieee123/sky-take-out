@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sky.mapper.ShoppingCartMapper">
+
+<!--    动态条件查询-->
+<!--    这个地方解释一下啊，在动态条件查询的时候，同时满足两种业务场景，第一个就是要是只传入userId可以查这个用户所有的购物车数据-->
+<!--    要是同时传入了dishId或者setmealId就只查询某一种商品或套餐的，只返回一条数据，但是不影响它存放在List数组中，只有一条数据罢了-->
+    <select id="list" resultType="com.sky.entity.ShoppingCart">
+        select * from shopping_cart
+        <where>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="dishId != null">
+                and dish_id = #{dishId}
+            </if>
+            <if test="setmealId != null">
+                and setmeal_id = #{setmealId}
+            </if>
+            <if test="dishFlavor != null">
+                and dish_flavor = #{dishFlavor}
+            </if>
+
+        </where>
+    </select>
+
+</mapper>

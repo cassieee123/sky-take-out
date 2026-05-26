@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 
 /**
  * 购物车
+ * 这里是一条购物车数据
  */
 @Data
 @Builder
