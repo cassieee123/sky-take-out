@@ -67,6 +67,7 @@
         </collection>
     </resultMap>
 
+<!--    根据订单状态和用户id查询订单列表（包含订单明细）-->
     <select id="list" resultMap="OrderVOResultMap" parameterType="com.sky.dto.OrdersPageQueryDTO">
         select t1.*, t2.id as od_id, t2.name as od_name, t2.image as od_image, t2.order_id as od_order_id, t2.dish_id as od_dish_id, t2.setmeal_id as od_setmeal_id,
                t2.dish_flavor as od_dish_flavor, t2.number as od_number, t2.amount as od_amount from order_detail t2 join orders t1 on t1.id = t2.order_id
@@ -92,5 +93,25 @@
         </where>
         order by t1.order_time desc
     </select>
-    
+
+<!--    对订单进行条件查询-->
+    <select id="conditionSearch" resultType="com.sky.vo.OrderVO" parameterType="com.sky.dto.OrdersPageQueryDTO">
+        select * from orders
+         <where>
+             <if test="number != null and number != ''">
+                 number = #{number}
+             </if>
+             <if test="phone != null and phone != ''">
+                    and phone = #{phone}
+             </if>
+            <if test="beginTime != null and endTime != null">
+                    and order_time between #{beginTime} and #{endTime}
+             </if>
+             <if test="status != null">
+                    and status = #{status}
+             </if>
+        </where>
+        order by order_time desc
+    </select>
+
 </mapper>

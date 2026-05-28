@@ -20,3 +20,7 @@ sky:
   wechat:
     appid: wxd165c88947111264
     secret: ac3b1afa1b734ef071d56917e0606243
+  shop:
+    address: 北京市朝阳区建国路93号万达广场C座
+  baidu:
+      ak: w8U2kPUKUIU6NRKWb4nl8q2rW7DIi9zF

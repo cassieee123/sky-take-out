@@ -42,4 +42,26 @@ public interface OrderMapper {
      * @return
      */
     OrderVO orderDetail(Long id);
+
+    /**
+     * 对订单进行条件查询
+     * @param ordersPageQueryDTO
+     * @return
+     */
+    Page<OrderVO> conditionSearch(OrdersPageQueryDTO ordersPageQueryDTO);
+
+    /**
+     * 根据状态对订单数量统计
+     * @param orders
+     */
+    @Select("select count(*) from orders where status = #{status}")
+    Integer statistics(Orders orders);
+
+    /**
+     * 根据订单id来查询订单
+     * @param id
+     * @return
+     */
+    @Select("select * from orders where id = #{id}")
+    Orders getById(Long id);
 }

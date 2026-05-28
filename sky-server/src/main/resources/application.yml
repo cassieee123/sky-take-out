@@ -70,3 +70,8 @@ sky:
 #    notify-url: ${sky.wechat.notify-url}
 #    refund-notify-url: ${sky.wechat.refund-notify-url}
 #    we-chat-pay-cert-file-path: ${sky.wechat.we-chat-pay-cert-file-path}
+
+  baidu:
+    ak: ${sky.baidu.ak}
+  shop:
+    address: ${sky.shop.address}
