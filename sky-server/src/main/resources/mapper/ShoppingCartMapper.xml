@@ -24,5 +24,14 @@
 
         </where>
     </select>
-
+    
+<!--    批量插入购物车数据-->
+    <insert id="insertBatch" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
+        insert into shopping_cart (user_id, dish_id, setmeal_id, name, image, dish_flavor, number, amount, create_time)
+        values
+        <foreach collection="shoppingCartList" item="item" separator=",">
+            (#{item.userId}, #{item.dishId}, #{item.setmealId}, #{item.name}, #{item.image}, #{item.dishFlavor}, #{item.number}, #{item.amount}, #{item.createTime})
+        </foreach>
+    </insert>
+    
 </mapper>

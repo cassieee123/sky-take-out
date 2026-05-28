@@ -7,4 +7,90 @@
         insert into orders (number, status, user_id, address_book_id, order_time, checkout_time, pay_method, pay_status, amount, remark, phone, address, user_name, consignee, cancel_reason, rejection_reason, cancel_time, estimated_delivery_time, delivery_status, delivery_time, pack_amount, tableware_number, tableware_status) VALUES
          (#{number}, #{status}, #{userId}, #{addressBookId}, #{orderTime}, #{checkoutTime}, #{payMethod}, #{payStatus}, #{amount}, #{remark}, #{phone}, #{address}, #{userName}, #{consignee}, #{cancelReason}, #{rejectionReason}, #{cancelTime}, #{estimatedDeliveryTime}, #{deliveryStatus}, #{deliveryTime}, #{packAmount}, #{tablewareNumber}, #{tablewareStatus})
     </insert>
+
+    <update id="update" parameterType="com.sky.entity.Orders">
+        update orders
+        <set>
+            <if test="cancelReason != null and cancelReason!='' "> cancel_reason=#{cancelReason}, </if>
+            <if test="rejectionReason != null and rejectionReason!='' "> rejection_reason=#{rejectionReason}, </if>
+            <if test="cancelTime != null"> cancel_time=#{cancelTime}, </if>
+            <if test="payStatus != null"> pay_status=#{payStatus}, </if>
+            <if test="payMethod != null"> pay_method=#{payMethod}, </if>
+            <if test="checkoutTime != null"> checkout_time=#{checkoutTime}, </if>
+            <if test="status != null"> status = #{status}, </if>
+            <if test="deliveryTime != null"> delivery_time = #{deliveryTime} </if>
+        </set>
+        where id = #{id}
+    </update>
+
+<!--    先定义 resultMap，专门映射 OrderVO + 订单明细列表-->
+    <resultMap id="OrderVOResultMap" type="com.sky.vo.OrderVO">
+<!--        订单主键-->
+        <id column="id" property="id"/>
+
+<!--        订单普通字段-->
+        <result column="number" property="number"/>
+        <result column="status" property="status"/>
+        <result column="user_id" property="userId"/>
+        <result column="address_book_id" property="addressBookId"/>
+        <result column="order_time" property="orderTime"/>
+        <result column="checkout_time" property="checkoutTime"/>
+        <result column="pay_method" property="payMethod"/>
+        <result column="pay_status" property="payStatus"/>
+        <result column="amount" property="amount"/>
+        <result column="remark" property="remark"/>
+        <result column="phone" property="phone"/>
+        <result column="address" property="address"/>
+        <result column="user_name" property="userName"/>
+        <result column="consignee" property="consignee"/>
+        <result column="cancel_reason" property="cancelReason"/>
+        <result column="rejection_reason" property="rejectionReason"/>
+        <result column="cancel_time" property="cancelTime"/>
+        <result column="estimated_delivery_time" property="estimatedDeliveryTime"/>
+        <result column="delivery_status" property="deliveryStatus"/>
+        <result column="delivery_time" property="deliveryTime"/>
+        <result column="pack_amount" property="packAmount"/>
+        <result column="tableware_number" property="tablewareNumber"/>
+        <result column="tableware_status" property="tablewareStatus"/>
+
+<!--        核心：自动封装  订单明细表（一对多）-->
+        <collection property="orderDetailList" ofType="com.sky.entity.OrderDetail">
+            <id column="od_id" property="id"/>
+            <result column="od_name" property="name"/>
+            <result column="od_image" property="image"/>
+            <result column="od_order_id" property="orderId"/>
+            <result column="od_dish_id" property="dishId"/>
+            <result column="od_setmeal_id" property="setmealId"/>
+            <result column="od_dish_flavor" property="dishFlavor"/>
+            <result column="od_number" property="number"/>
+            <result column="od_amount" property="amount"/>
+        </collection>
+    </resultMap>
+
+    <select id="list" resultMap="OrderVOResultMap" parameterType="com.sky.dto.OrdersPageQueryDTO">
+        select t1.*, t2.id as od_id, t2.name as od_name, t2.image as od_image, t2.order_id as od_order_id, t2.dish_id as od_dish_id, t2.setmeal_id as od_setmeal_id,
+               t2.dish_flavor as od_dish_flavor, t2.number as od_number, t2.amount as od_amount from order_detail t2 join orders t1 on t1.id = t2.order_id
+        <where>
+            <if test="status != null">
+                t1.status = #{status}
+            </if>
+            <if test="userId != null">
+                and t1.user_id = #{userId}
+            </if>
+        </where>
+        order by t1.order_time desc
+    </select>
+
+<!--    根据订单id查询订单详情-->
+    <select id="orderDetail" resultMap="OrderVOResultMap">
+        select t1.*, t2.id as od_id, t2.name as od_name, t2.image as od_image, t2.order_id as od_order_id, t2.dish_id as od_dish_id, t2.setmeal_id as od_setmeal_id,
+        t2.dish_flavor as od_dish_flavor, t2.number as od_number, t2.amount as od_amount from order_detail t2 join orders t1 on t1.id = t2.order_id
+        <where>
+            <if test="id != null">
+                t1.id = #{id}
+            </if>
+        </where>
+        order by t1.order_time desc
+    </select>
+    
 </mapper>
