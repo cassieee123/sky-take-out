@@ -8,6 +8,13 @@
         values (#{openid},#{name}, #{phone}, #{sex},#{idNumber}, #{avatar}, #{createTime})
     </insert>
 
-
-
+    <!--    根据动态条件统计用户数量-->
+    <select id="countUserByMap" resultType="java.lang.Integer">
+        select count(id) from user
+        <where>
+            <if test="begin != null">and create_time &gt; #{begin}</if>
+            <if test="end != null">and create_time &lt; #{end}</if>
+        </where>
+    </select>
+<!--    这个地方爆红是误报  不是代码错-->
 </mapper>

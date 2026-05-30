@@ -114,4 +114,39 @@
         order by order_time desc
     </select>
 
+<!--    根据动态条件统计营业额数量-->
+    <select id="sumByMap" resultType="java.lang.Double">
+
+        select sum(amount) from orders
+        <where>
+            <if test="begin != null">and order_time &gt; #{begin}</if>
+            <if test="end != null">and order_time &lt; #{end}</if>
+            <if test="status != null"> and status = #{status} </if>
+        </where>
+    </select>
+
+<!--    根据动态条件统计订单总数量和有效数量-->
+    <select id="countByMap" resultType="java.lang.Integer">
+        select
+        count(*) as total,
+        sum(case when status in (2, 3, 4) then 1 else 0 end) as valid
+        from orders
+        <where>
+            <if test="begin != null">and order_time &gt; #{begin}</if>
+            <if test="end != null">and order_time &lt; #{end}</if>
+            <if test="status != null"> and status = #{status} </if>
+        </where>
+    </select>
+
+<!--    在指定的时间区间内，统计销量前十的菜品和套餐-->
+    <select id="getTop10" resultType="com.sky.dto.GoodsSalesDTO">
+        select od.name, sum(od.number) as number
+        from orders o join order_detail od
+        on o.id = od.order_id and
+        o.order_time between #{beginTime} and #{endTime}
+        group by od.name
+        order by number desc
+        limit 0,10
+    </select>
+
 </mapper>

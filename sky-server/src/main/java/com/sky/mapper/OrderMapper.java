@@ -1,15 +1,20 @@
 package com.sky.mapper;
 
 import com.github.pagehelper.Page;
+import com.sky.dto.GoodsSalesDTO;
 import com.sky.dto.OrdersPageQueryDTO;
 import com.sky.entity.Orders;
 import com.sky.vo.OrderVO;
+import com.sky.vo.SalesTop10ReportVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+
+import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface OrderMapper {
@@ -88,4 +93,27 @@ public interface OrderMapper {
     @Update("update orders set status = #{orderStatus}, pay_status = #{orderPaidStatus}," +
             " checkout_time = #{checkOutTime} where number = #{orderNumber}")
     void updateStatus(Integer orderStatus, Integer orderPaidStatus, LocalDateTime checkOutTime, String orderNumber);
+
+    /**
+     * 统计订单金额（可按时间区间和状态过滤）
+     * @param map
+     * @return 总金额
+     */
+    Double sumByMap(Map map);
+
+    /**
+     * 统计订单数量（总数量和有效数量）
+     * @param map
+     * @return
+     */
+    Integer countByMap(Map map);
+
+    /**
+     * 在时间区间内，展示销量前十的商品
+     *
+     * @param beginTime
+     * @param endTime
+     * @return
+     */
+    List<GoodsSalesDTO> getTop10(LocalDateTime beginTime, LocalDateTime endTime);
 }
